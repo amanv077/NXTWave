@@ -41,14 +41,33 @@ body {
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
+  
+  /* Fix sticky navigation on mobile */
+  nav[class*="sticky"] {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+  }
+}
+
+/* Ensure sticky positioning works across browsers */
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+}
+
+/* Classic typography improvements */
+.font-serif {
+  font-family: 'Georgia', 'Times New Roman', serif;
 }
 
 /* Improve scrollable navigation */
-.overflow-x-auto {
+.overflow-x-auto, .scrollbar-hide {
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
 }
 
-.overflow-x-auto::-webkit-scrollbar {
+.overflow-x-auto::-webkit-scrollbar, .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Chrome/Safari */
 }
