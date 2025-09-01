@@ -50,7 +50,7 @@ export default function Home() {
       <Hero />
       <Navigation activeSection={activeSection} onSectionChange={setActiveSection} />
 
-      <main className="container mx-auto px-6 py-12 max-w-7xl">
+      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-7xl">
         <ExecutiveSummary />
         <ProductDeepDive />
         <UserPersonas />
