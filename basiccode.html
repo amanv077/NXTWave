@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NxtWave Interactive Company Analysis - Product Deep Dive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Subtle Blues -->
+    <!-- Application Structure Plan: Expanded the narrative dashboard to include a full product management lifecycle perspective. It flows from high-level strategy (Overview, Mission) to product specifics (Product Deep Dive, User Personas), then to growth mechanics (Go-to-Market). It then critically evaluates performance through both financial and product lenses (Financials, Product Metrics, The Two Narratives), and concludes with a strategic forward-looking analysis (Competition, SWOT, Strategic Roadmap). This structure provides a 360-degree view, essential for a product manager role, connecting the company's "what" and "why" to its "how" and "what's next". -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Product Features (CCBP 4.0) -> Goal: Organize & Inform -> Viz: Feature card grid -> Interaction: Hover effects -> Justification: Breaks down a complex product into digestible components for easy understanding. -> Library/Method: HTML/Tailwind.
+        - Report Info: Target Audience -> Goal: Empathize & Inform -> Viz: User Persona Cards -> Interaction: Static, detailed cards -> Justification: Provides a concrete, human-centered view of the target user, which is a core PM artifact. -> Library/Method: HTML/Tailwind.
+        - Report Info: Sales & Marketing -> Goal: Explain process -> Viz: Vertical Funnel Diagram -> Interaction: Hover to highlight stages -> Justification: Visually represents the user acquisition process, a key business flow. -> Library/Method: HTML/Tailwind/JS.
+        - Report Info: Product Performance -> Goal: Analyze -> Viz: KPI Dashboard with Gauge, Radar, and Bar Charts -> Interaction: Hover for tooltips -> Justification: Moves beyond financials to show the health of the product itself (engagement, satisfaction), crucial for a PM. -> Library: Chart.js.
+        - Report Info: Future Strategy -> Goal: Organize future plans -> Viz: Timeline-based Roadmap -> Interaction: N/A -> Justification: A classic PM tool to communicate future direction and priorities clearly. -> Library/Method: HTML/Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .hero-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            white-space: nowrap;
+            position: relative;
+        }
+        .nav-link.active {
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+            font-weight: 600;
+        }
+        .nav-link:hover {
+            color: #1d4ed8;
+            transform: translateY(-2px);
+        }
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .content-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .kpi-card {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+        }
+        .narrative-toggle-btn {
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+        }
+        .narrative-toggle-btn.active {
+            background-color: #1e40af;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .swot-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border-left-width: 4px;
+            transition: transform 0.3s ease;
+        }
+        .swot-card:hover {
+            transform: translateY(-2px);
+        }
+        .roadmap-item::before {
+            content: '';
+            position: absolute;
+            left: -1px;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, #2563eb, #1d4ed8);
+        }
+        .roadmap-dot::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1rem;
+            height: 1rem;
+            border-radius: 9999px;
+            background-color: #fff;
+            border: 3px solid #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+        .feature-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .persona-card {
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        .persona-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.15);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 450px;
+        }
+        .section-container {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+        .footer {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="hero-section">
+        <div class="container mx-auto px-4">
+            <h1 class="hero-title">NxtWave</h1>
+            <p class="hero-subtitle">Transforming Careers Through Innovative Tech Education</p>
+            <div class="flex justify-center space-x-4 mt-8">
+                <div class="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
+                    <div class="text-2xl font-bold">$230M</div>
+                    <div class="text-sm opacity-90">Post-Money Valuation</div>
+                </div>
+                <div class="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
+                    <div class="text-2xl font-bold">100,000+</div>
+                    <div class="text-sm opacity-90">Students Trained</div>
+                </div>
+                <div class="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
+                    <div class="text-2xl font-bold">2,000+</div>
+                    <div class="text-sm opacity-90">Hiring Companies</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <header class="text-center mb-8 md:mb-12 bg-white rounded-xl shadow-lg p-6 mx-4">
+            <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">NxtWave</h1>
+            <p class="text-lg md:text-xl text-gray-600 mt-2">Interactive Product Management Analysis</p>
+            <div class="mt-4 text-sm text-gray-500">
+                Comprehensive analysis of NxtWave's business model, product strategy, and market position
+            </div>
+        </header>
+
+        <nav class="sticky top-0 bg-white/95 backdrop-blur-md z-10 mb-8 border-b border-gray-200 shadow-sm mx-4 rounded-xl">
+            <div class="flex justify-start md:justify-center items-center space-x-4 md:space-x-6 overflow-x-auto py-4 px-6">
+                <a class="nav-link active text-sm md:text-base font-medium text-gray-600 pb-2 px-3 rounded-lg hover:bg-gray-100 transition-all" data-target="summary">📊 Overview</a>
+                <a class="nav-link text-sm md:text-base font-medium text-gray-600 pb-2 px-3 rounded-lg hover:bg-gray-100 transition-all" data-target="product">🔍 Product Deep Dive</a>
+                <a class="nav-link text-sm md:text-base font-medium text-gray-600 pb-2 px-3 rounded-lg hover:bg-gray-100 transition-all" data-target="personas">👥 User Personas</a>
+                <a class="nav-link text-sm md:text-base font-medium text-gray-600 pb-2 px-3 rounded-lg hover:bg-gray-100 transition-all" data-target="gtm">🚀 Go-To-Market</a>
+                <a class="nav-link text-sm md:text-base font-medium text-gray-600 pb-2 px-3 rounded-lg hover:bg-gray-100 transition-all" data-target="metrics">📈 Product Metrics</a>
+                <a class="nav-link text-sm md:text-base font-medium text-gray-600 pb-2 px-3 rounded-lg hover:bg-gray-100 transition-all" data-target="financials">💰 Financials</a>
+                <a class="nav-link text-sm md:text-base font-medium text-gray-600 pb-2 px-3 rounded-lg hover:bg-gray-100 transition-all" data-target="narrative">⚖️ Two Narratives</a>
+                <a class="nav-link text-sm md:text-base font-medium text-gray-600 pb-2 px-3 rounded-lg hover:bg-gray-100 transition-all" data-target="competition">🏆 Competition</a>
+                <a class="nav-link text-sm md:text-base font-medium text-gray-600 pb-2 px-3 rounded-lg hover:bg-gray-100 transition-all" data-target="swot">🔄 SWOT</a>
+                <a class="nav-link text-sm md:text-base font-medium text-gray-600 pb-2 px-3 rounded-lg hover:bg-gray-100 transition-all" data-target="roadmap">🗺️ Roadmap</a>
+            </div>
+        </nav>
+
+        <main>
+            <section id="summary" class="content-section active">
+                <div class="section-container mx-4">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Executive Summary</h2>
+                    <p class="text-gray-700 leading-relaxed mb-8 text-center max-w-4xl mx-auto">This section provides a high-level overview of NxtWave's strategic position. It synthesizes the company's market focus, operational scale, and the central tension between its public image and user criticism. Use the key performance indicators (KPIs) below to quickly grasp the company's impressive scale and valuation before diving deeper into the other sections.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="kpi-card">
+                            <div class="text-4xl font-bold text-blue-600 mb-2">$33M</div>
+                            <p class="text-gray-500">Series A Funding (2023)</p>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="text-4xl font-bold text-blue-600 mb-2">100,000+</div>
+                            <p class="text-gray-500">Students Trained</p>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="text-4xl font-bold text-blue-600 mb-2">2,000+</div>
+                            <p class="text-gray-500">Hiring Companies</p>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="text-4xl font-bold text-blue-600 mb-2">$230M</div>
+                            <p class="text-gray-500">Post-Money Valuation (2023)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="product" class="content-section">
+                <div class="section-container mx-4">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Product Deep Dive: CCBP 4.0</h2>
+                    <p class="text-gray-700 leading-relaxed mb-8 text-center max-w-4xl mx-auto">From a product perspective, understanding the core offering is paramount. NxtWave's flagship product, CCBP 4.0 (Continuous Career Building Programs), is a multi-faceted platform designed to take a learner from novice to job-ready. The product's structure and features are built to address the key pain points of their target users: lack of structured guidance, language barriers, and a gap between academic knowledge and industry requirements.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="feature-card">
+                            <h3 class="font-bold text-xl text-gray-800 mb-3">Structured Learning Path</h3>
+                            <p class="text-gray-600">A guided journey from basics (Python, SQL) to specialization (Full Stack, Data Science), designed to prevent overwhelm and build confidence incrementally.</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3 class="font-bold text-xl text-gray-800 mb-3">Vernacular Language Support</h3>
+                            <p class="text-gray-600">Content delivery in Telugu, Hindi, and Tamil alongside English. This is the core feature for market penetration in Tier-2/3 cities and a key product differentiator.</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3 class="font-bold text-xl text-gray-800 mb-3">Hands-On Projects</h3>
+                            <p class="text-gray-600">Real-world project portfolio building (e.g., "Zomato Clone," "Wikipedia Search App") to provide practical experience and tangible resume assets.</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3 class="font-bold text-xl text-gray-800 mb-3">Live Doubt Clarification</h3>
+                            <p class="text-gray-600">A key support feature designed to provide instant help and prevent learners from getting stuck, although its effectiveness is a point of contention in user reviews.</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3 class="font-bold text-xl text-gray-800 mb-3">Placement Assistance Program (PAP)</h3>
+                            <p class="text-gray-600">Includes resume building, mock interviews, and access to a hiring portal. The performance of this product feature is central to the company's value proposition and user criticism.</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3 class="font-bold text-xl text-gray-800 mb-3">Community & Mentorship</h3>
+                            <p class="text-gray-600">Access to a community of peers and supposed one-on-one mentorship sessions. A feature designed to boost engagement and retention.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="personas" class="content-section">
+                <div class="section-container mx-4">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Target User Personas</h2>
+                    <p class="text-gray-700 leading-relaxed mb-8 text-center max-w-4xl mx-auto">Effective product management starts with a deep understanding of the user. NxtWave's product and marketing are tailored for specific archetypes within the "Bharat" demographic. Below are two representative personas that illustrate the needs, goals, and frustrations the CCBP 4.0 product aims to solve.</p>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="persona-card border bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                            <h3 class="text-2xl font-bold text-blue-800 mb-4">Ravi, The Ambitious Graduate</h3>
+                            <p class="text-sm text-blue-600 font-medium mb-4">Age: 22 | Education: B.Com | Location: Tier-3 City (AP)</p>
+                            <div class="mb-4">
+                                <h4 class="font-semibold text-gray-800 mb-2">Goals:</h4>
+                                <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                    <li>Escape the low-paying job market in his hometown.</li>
+                                    <li>Secure a stable, high-growth IT job in a major city.</li>
+                                    <li>Make his family proud and improve their financial situation.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-2">Frustrations:</h4>
+                                <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                    <li>No clear path into the tech industry with his non-engineering degree.</li>
+                                    <li>Finds English-only online courses difficult to follow.</li>
+                                    <li>Lacks confidence and the "right connections" for job hunting.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="persona-card border bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+                            <h3 class="text-2xl font-bold text-green-800 mb-4">Priya, The Underprepared Engineer</h3>
+                             <p class="text-sm text-green-600 font-medium mb-4">Age: 21 | Education: Final Year, Mech. Engg. | Location: Tier-2 City (Telangana)</p>
+                            <div class="mb-4">
+                                <h4 class="font-semibold text-gray-800 mb-2">Goals:</h4>
+                                <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                    <li>Pivot from her core engineering field to a more lucrative software role.</li>
+                                    <li>Gain practical coding skills that her college curriculum lacks.</li>
+                                    <li>Get a job offer before or immediately after graduation.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-2">Frustrations:</h4>
+                                <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                    <li>Her college's placement cell has few good software companies visiting.</li>
+                                    <li>Feels overwhelmed by the vast number of programming languages and tools.</li>
+                                    <li>Worries that she is far behind her peers from CS/IT branches.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="gtm" class="content-section">
+                 <div class="section-container mx-4">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Go-To-Market (GTM) Strategy</h2>
+                    <p class="text-gray-700 leading-relaxed mb-8 text-center max-w-4xl mx-auto">NxtWave employs a high-touch, digitally-driven GTM strategy designed to build trust and urgency. The funnel is optimized to guide prospects from initial awareness on social platforms to conversion through direct, personalized sales interactions. Understanding this funnel is key to understanding their aggressive growth and the source of some user complaints about sales pressure.</p>
+                    <div class="w-full max-w-2xl mx-auto mt-8">
+                        <div class="flex flex-col items-center space-y-4">
+                            <div class="p-6 bg-gradient-to-r from-purple-100 to-purple-200 rounded-xl text-center w-full shadow-lg border border-purple-300">
+                                <h3 class="font-bold text-xl text-purple-800 mb-2">Awareness</h3>
+                                <p class="text-sm text-purple-700">Aggressive YouTube & Social Media Ads, Founder interviews, Vernacular Content Marketing</p>
+                            </div>
+                            <div class="text-4xl text-purple-500 animate-bounce">▼</div>
+                             <div class="p-6 bg-gradient-to-r from-indigo-100 to-indigo-200 rounded-xl text-center w-full shadow-lg border border-indigo-300">
+                                <h3 class="font-bold text-xl text-indigo-800 mb-2">Consideration</h3>
+                                <p class="text-sm text-indigo-700">Free "Masterclasses" & Webinars, Lead capture for WhatsApp marketing, Testimonial showcases</p>
+                            </div>
+                            <div class="text-4xl text-indigo-500 animate-bounce">▼</div>
+                             <div class="p-6 bg-gradient-to-r from-blue-100 to-blue-200 rounded-xl text-center w-full shadow-lg border border-blue-300">
+                                <h3 class="font-bold text-xl text-blue-800 mb-2">Conversion</h3>
+                                <p class="text-sm text-blue-700">High-pressure tele-sales calls, EMI financing options, Scarcity tactics ("Batch filling up")</p>
+                            </div>
+                            <div class="text-4xl text-blue-500 animate-bounce">▼</div>
+                             <div class="p-6 bg-gradient-to-r from-green-100 to-green-200 rounded-xl text-center w-full shadow-lg border border-green-300">
+                                <h3 class="font-bold text-xl text-green-800 mb-2">Retention & Advocacy</h3>
+                                <p class="text-sm text-green-700">Telegram/Discord communities, Placement support, (Alleged) incentivized positive reviews</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="metrics" class="content-section">
+                <div class="section-container mx-4">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Product Metrics Dashboard</h2>
+                    <p class="text-gray-700 leading-relaxed mb-8 text-center max-w-4xl mx-auto">While financials show business health, product metrics reveal user experience and operational effectiveness. This dashboard presents hypothetical but plausible KPIs based on the dual narratives. A key challenge for the product team is to improve these metrics, particularly those related to user satisfaction and placement outcomes, to align the user experience with marketing promises.</p>
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h3 class="text-xl font-semibold text-center text-gray-800 mb-4">User Satisfaction (NPS)</h3>
+                             <div class="chart-container" style="height: 30vh; max-height: 250px;">
+                                <canvas id="npsChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h3 class="text-xl font-semibold text-center text-gray-800 mb-4">Placement Success Rate (Claimed vs. Reported)</h3>
+                            <div class="chart-container" style="height: 30vh; max-height: 250px;">
+                                <canvas id="placementChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2 bg-gray-50 p-6 rounded-xl">
+                             <h3 class="text-xl font-semibold text-center text-gray-800 mb-4">Common User Feedback (from negative reviews)</h3>
+                            <div class="chart-container" style="height: 45vh; max-height: 400px;">
+                                <canvas id="feedbackChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="financials" class="content-section">
+                <div class="section-container mx-4">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Financials & Growth</h2>
+                    <p class="text-gray-700 leading-relaxed mb-8 text-center max-w-4xl mx-auto">This section visualizes NxtWave's remarkable financial journey. A key strength is its ability to achieve profitability while scaling rapidly, especially during the "EdTech Winter" when many competitors struggled. The charts below illustrate the company's explosive revenue growth, profitability, and the significant venture capital it has attracted. Hover over the charts to see detailed figures for each period.</p>
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h3 class="text-xl font-semibold text-center text-gray-800 mb-4">Revenue & Profit Growth (in ₹ Crore)</h3>
+                            <div class="chart-container">
+                                <canvas id="revenueProfitChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h3 class="text-xl font-semibold text-center text-gray-800 mb-4">Major Funding Rounds</h3>
+                            <div class="chart-container">
+                                <canvas id="fundingChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="narrative" class="content-section">
+                 <div class="section-container mx-4">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">The Duality of Perception</h2>
+                    <p class="text-gray-700 leading-relaxed mb-8 text-center max-w-4xl mx-auto">This is the most critical section for a nuanced understanding of NxtWave. It presents the two starkly contrasting narratives about the company. Use the buttons below to toggle between the official story of success, backed by prestigious awards and endorsements, and the critical counter-narrative from users on public forums. This interactive comparison highlights the core strategic challenge NxtWave faces: bridging the gap between perception and reality.</p>
+                    <div class="flex justify-center mb-8">
+                        <div class="bg-gray-100 p-1 rounded-lg border">
+                            <button id="officialBtn" class="narrative-toggle-btn active px-6 py-3 text-sm font-semibold rounded-md">The Official Narrative</button>
+                            <button id="counterBtn" class="narrative-toggle-btn px-6 py-3 text-sm font-semibold rounded-md">The Counter-Narrative</button>
+                        </div>
+                    </div>
+
+                    <div id="officialNarrative" class="bg-green-50 p-6 rounded-xl border border-green-200">
+                        <h3 class="text-2xl font-semibold text-green-700 mb-4">A Story of Unparalleled Success</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start"><span class="text-green-500 text-3xl mr-4">✓</span><div><strong class="text-green-800">Prestigious Awards:</strong> Named a Technology Pioneer 2024 by the World Economic Forum and featured in Deloitte Technology Fast 50 India.</div></li>
+                            <li class="flex items-start"><span class="text-green-500 text-3xl mr-4">✓</span><div><strong class="text-green-800">Government Endorsements:</strong> Official partnerships with National Skill Development Corporation (NSDC) and NASSCOM, lending government-backed legitimacy.</div></li>
+                            <li class="flex items-start"><span class="text-green-500 text-3xl mr-4">✓</span><div><strong class="text-green-800">Inspirational Testimonials:</strong> Powerful success stories of students from non-tech backgrounds transitioning into high-paying software roles.</div></li>
+                        </ul>
+                    </div>
+
+                    <div id="counterNarrative" class="hidden bg-red-50 p-6 rounded-xl border border-red-200">
+                        <h3 class="text-2xl font-semibold text-red-700 mb-4">A Critical User Perspective</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start"><span class="text-red-500 text-3xl mr-4">✗</span><div><strong class="text-red-800">Ineffective Placements:</strong> Allegations of drastically lower placement rates and salary packages (₹3-3.5 LPA) than advertised. Support allegedly consists of sharing public job links.</div></li>
+                            <li class="flex items-start"><span class="text-red-500 text-3xl mr-4">✗</span><div><strong class="text-red-800">Subpar Course Quality:</strong> Complaints of unstructured, outdated content, forcing students to rely on free external resources like YouTube.</div></li>
+                            <li class="flex items-start"><span class="text-red-500 text-3xl mr-4">✗</span><div><strong class="text-red-800">Failure of Support:</strong> Claims that promised mentor sessions never happen and support channels become unresponsive after payment.</div></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+             <section id="competition" class="content-section">
+                <div class="section-container mx-4">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Competitive Landscape</h2>
+                    <p class="text-gray-700 leading-relaxed mb-8 text-center max-w-4xl mx-auto">The Indian tech upskilling market is fiercely competitive. This section provides a comparative analysis of NxtWave against its key rivals: Masai School and Coding Ninjas. The table highlights the fundamental differences in their business models—a strategic choice that significantly impacts risk allocation between the company and the student, and likely influences student perception and feedback.</p>
+                    <div class="overflow-x-auto bg-gray-50 p-6 rounded-xl">
+                        <table class="w-full text-left border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                            <thead>
+                                <tr class="bg-gradient-to-r from-gray-100 to-gray-200">
+                                    <th class="py-4 px-6 font-semibold text-sm text-gray-600 border-b">Feature</th>
+                                    <th class="py-4 px-6 font-semibold text-sm text-blue-800 border-b bg-blue-50">NxtWave</th>
+                                    <th class="py-4 px-6 font-semibold text-sm text-gray-600 border-b">Masai School</th>
+                                    <th class="py-4 px-6 font-semibold text-sm text-gray-600 border-b">Coding Ninjas</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-4 px-6 border-b font-medium">Business Model</td>
+                                    <td class="py-4 px-6 border-b text-blue-700 bg-blue-50">Primarily Upfront Fee</td>
+                                    <td class="py-4 px-6 border-b">Pay After Placement (ISA)</td>
+                                    <td class="py-4 px-6 border-b">Upfront Fee (EMI options)</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-4 px-6 border-b font-medium">Risk Allocation</td>
+                                    <td class="py-4 px-6 text-blue-700 bg-blue-50">Primarily on the Student</td>
+                                    <td class="py-4 px-6 border-b">Primarily on the Institution</td>
+                                    <td class="py-4 px-6 border-b">Primarily on the Student</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="swot" class="content-section">
+                <div class="section-container mx-4">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">SWOT Analysis</h2>
+                     <p class="text-gray-700 leading-relaxed mb-8 text-center max-w-4xl mx-auto">This final section provides a structured strategic analysis of NxtWave, summarizing its Strengths, Weaknesses, Opportunities, and Threats. This framework synthesizes all the information from the previous sections, offering a concise yet comprehensive view of the company's current position and future outlook. It's a powerful tool for understanding the key factors that will determine NxtWave's long-term success.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="swot-card border-l-green-500 bg-gradient-to-br from-green-50 to-green-100">
+                            <h3 class="text-2xl font-semibold text-green-700 mb-4">Strengths</h3>
+                            <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                <li>Visionary leadership with elite academic pedigrees.</li>
+                                <li>Robust financial backing and proven profitability.</li>
+                                <li>Clear market niche in underserved Tier-2/3/4 cities.</li>
+                                <li>Official endorsements from bodies like NSDC & NASSCOM.</li>
+                            </ul>
+                        </div>
+                        <div class="swot-card border-l-red-500 bg-gradient-to-br from-red-50 to-red-100">
+                            <h3 class="text-2xl font-semibold text-red-700 mb-4">Weaknesses</h3>
+                            <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                <li>Severe reputational risk from negative online reviews.</li>
+                                <li>Operational challenges in scaling high-quality support.</li>
+                                <li>Credibility gap due to alleged marketing practices.</li>
+                            </ul>
+                        </div>
+                        <div class="swot-card border-l-blue-500 bg-gradient-to-br from-blue-50 to-blue-100">
+                            <h3 class="text-2xl font-semibold text-blue-700 mb-4">Opportunities</h3>
+                            <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                <li>Massive untapped market in non-metropolitan India.</li>
+                                <li>Inorganic growth through strategic acquisitions.</li>
+                                <li>Technological innovation (AI) to scale support.</li>
+                                <li>Favorable government policies on skill-based learning.</li>
+                            </ul>
+                        </div>
+                        <div class="swot-card border-l-yellow-500 bg-gradient-to-br from-yellow-50 to-yellow-100">
+                            <h3 class="text-2xl font-semibold text-yellow-700 mb-4">Threats</h3>
+                            <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                <li>Intense competition (especially from ISA models).</li>
+                                <li>Macroeconomic downturns affecting tech hiring.</li>
+                                <li>Increasing regulatory scrutiny on the EdTech sector.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="roadmap" class="content-section">
+                <div class="section-container mx-4">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Strategic Product Roadmap (Hypothetical)</h2>
+                    <p class="text-gray-700 leading-relaxed mb-8 text-center max-w-4xl mx-auto">A forward-looking product manager must always be thinking about "what's next?". This hypothetical roadmap outlines potential strategic initiatives NxtWave could pursue to address its weaknesses and capitalize on its opportunities. It focuses on evolving the product from a single offering to a comprehensive career ecosystem.</p>
+                    <div class="relative pl-8 bg-gray-50 p-8 rounded-xl">
+                        <div class="relative pl-8 pb-8 roadmap-item">
+                            <div class="roadmap-dot"></div>
+                            <p class="text-sm font-semibold text-gray-500 mb-2">Horizon 1: Optimize The Core (Next 6-12 Months)</p>
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">Theme: Improve User Trust & Outcomes</h3>
+                            <ul class="list-disc list-inside mt-2 text-gray-600 space-y-1">
+                                <li>Overhaul Placement Support with verifiable metrics.</li>
+                                <li>Implement a robust, scalable mentorship platform.</li>
+                                <li>Introduce AI-powered doubt resolution to improve support.</li>
+                            </ul>
+                        </div>
+                        <div class="relative pl-8 pb-8 roadmap-item">
+                           <div class="roadmap-dot"></div>
+                            <p class="text-sm font-semibold text-gray-500 mb-2">Horizon 2: Expand & Differentiate (1-2 Years)</p>
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">Theme: Deepen Value Proposition</h3>
+                            <ul class="list-disc list-inside mt-2 text-gray-600 space-y-1">
+                                <li>Launch advanced specializations (e.g., AI/ML, DevOps, Cybersecurity).</li>
+                                <li>Develop a B2B corporate training product ("Upskill with NxtWave").</li>
+                                <li>Introduce hyper-local job boards for Tier-2/3 cities.</li>
+                            </ul>
+                        </div>
+                        <div class="relative pl-8 roadmap-item">
+                            <div class="roadmap-dot"></div>
+                            <p class="text-sm font-semibold text-gray-500 mb-2">Horizon 3: Build an Ecosystem (2-4 Years)</p>
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">Theme: Become the "Bharat" Career Platform</h3>
+                            <ul class="list-disc list-inside mt-2 text-gray-600 space-y-1">
+                                <li>Create a "NxtWave Pro" subscription for continuous learning.</li>
+                                <li>Build a freelance marketplace connecting graduates with projects.</li>
+                                <li>Launch an incubator for student-led startups.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="container mx-auto px-4 text-center">
+                <h3 class="text-2xl font-bold mb-4">NxtWave Interactive Analysis</h3>
+                <p class="mb-6 opacity-90">Comprehensive product management analysis showcasing strategic thinking and data-driven insights</p>
+                <div class="flex justify-center space-x-8 text-sm">
+                    <div>
+                        <div class="font-semibold">Created for Interview Presentation</div>
+                        <div class="opacity-75">Product Management Portfolio</div>
+                    </div>
+                    <div>
+                        <div class="font-semibold">Technologies Used</div>
+                        <div class="opacity-75">HTML, Tailwind CSS, Chart.js</div>
+                    </div>
+                    <div>
+                        <div class="font-semibold">Analysis Framework</div>
+                        <div class="opacity-75">SWOT, Competitive Analysis, Roadmap</div>
+                    </div>
+                </div>
+                <div class="mt-8 pt-6 border-t border-white/20 text-xs opacity-75">
+                    © 2025 NxtWave Analysis. Built with modern web technologies for professional presentation.
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            function setActiveTab(targetId) {
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.target === targetId);
+                });
+                contentSections.forEach(section => {
+                    section.classList.toggle('active', section.id === targetId);
+                });
+                // Smooth scroll to section
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.target.dataset.target;
+                    setActiveTab(targetId);
+                });
+            });
+
+            const officialBtn = document.getElementById('officialBtn');
+            const counterBtn = document.getElementById('counterBtn');
+            const officialNarrative = document.getElementById('officialNarrative');
+            const counterNarrative = document.getElementById('counterNarrative');
+
+            if (officialBtn) {
+                officialBtn.addEventListener('click', () => {
+                    officialBtn.classList.add('active');
+                    counterBtn.classList.remove('active');
+                    officialNarrative.style.display = 'block';
+                    counterNarrative.style.display = 'none';
+                });
+            }
+            
+            if (counterBtn) {
+                counterBtn.addEventListener('click', () => {
+                    counterBtn.classList.add('active');
+                    officialBtn.classList.remove('active');
+                    counterNarrative.style.display = 'block';
+                    officialNarrative.style.display = 'none';
+                });
+            }
+
+            function createCharts() {
+                Chart.defaults.font.family = "'Inter', sans-serif";
+
+                const revenueProfitCtx = document.getElementById('revenueProfitChart');
+                if (revenueProfitCtx) {
+                    new Chart(revenueProfitCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['FY22', 'FY24'],
+                            datasets: [{
+                                label: 'Revenue',
+                                data: [30.18, 140],
+                                backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                                yAxisID: 'y',
+                            }, {
+                                label: 'Profit',
+                                data: [2.6, 12.84],
+                                backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                                type: 'line',
+                                yAxisID: 'y1',
+                            }]
+                        },
+                        options: {
+                            responsive: true, maintainAspectRatio: false,
+                            scales: {
+                                y: { beginAtZero: true, position: 'left', title: { display: true, text: 'Revenue (₹ Cr)' } },
+                                y1: { beginAtZero: true, position: 'right', title: { display: true, text: 'Profit (₹ Cr)' }, grid: { drawOnChartArea: false } }
+                            }
+                        }
+                    });
+                }
+
+                const fundingCtx = document.getElementById('fundingChart');
+                if (fundingCtx) {
+                    new Chart(fundingCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Seed Round (Nov 2021)', 'Series A (Feb 2023)'],
+                            datasets: [{ data: [2.84, 33], backgroundColor: ['rgba(251, 146, 60, 0.7)', 'rgba(239, 68, 68, 0.7)'] }]
+                        },
+                        options: {
+                            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: { x: { beginAtZero: true, title: { display: true, text: 'Amount ($M)' } } }
+                        }
+                    });
+                }
+
+                const npsCtx = document.getElementById('npsChart');
+                if(npsCtx) {
+                    new Chart(npsCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Detractors', 'Passives', 'Promoters'],
+                            datasets: [{
+                                label: 'NPS Score: -25',
+                                data: [45, 30, 20],
+                                backgroundColor: ['#ef4444', '#f59e0b', '#22c55e']
+                            }]
+                        },
+                        options: {
+                             indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                             plugins: { legend: { position: 'top' } }
+                        }
+                    });
+                }
+
+                const placementCtx = document.getElementById('placementChart');
+                if(placementCtx) {
+                    new Chart(placementCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Success Rate'],
+                            datasets: [
+                                { label: 'Claimed', data: [90], backgroundColor: '#3b82f6' },
+                                { label: 'User-Reported', data: [35], backgroundColor: '#f97316' }
+                            ]
+                        },
+                        options: {
+                            responsive: true, maintainAspectRatio: false,
+                            scales: { y: { beginAtZero: true, max: 100, ticks: { callback: value => value + "%" } } }
+                        }
+                    });
+                }
+
+                const feedbackCtx = document.getElementById('feedbackChart');
+                if(feedbackCtx) {
+                    new Chart(feedbackCtx, {
+                        type: 'radar',
+                        data: {
+                            labels: ['Placement Support', 'Course Quality', 'Mentor Availability', 'Sales Promises', 'Community'],
+                            datasets: [{
+                                label: 'Negative Feedback Frequency',
+                                data: [9, 8, 7, 9, 4],
+                                fill: true,
+                                backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                                borderColor: 'rgb(239, 68, 68)',
+                                pointBackgroundColor: 'rgb(239, 68, 68)',
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                }
+            }
+            
+            createCharts();
+        });
+    </script>
+
+</body>
+</html>
+
