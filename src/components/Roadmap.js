@@ -1,20 +1,20 @@
 export default function Roadmap() {
   return (
-    <section id="roadmap" className="mb-16">
-      <div className="bg-white rounded-xl shadow-lg p-8">
-        <h2 className="text-4xl font-bold text-gray-800 mb-6 text-center">Strategic Product Roadmap</h2>
-        <p className="text-gray-700 text-lg leading-relaxed mb-8 text-center max-w-4xl mx-auto">
+    <section id="roadmap" className="mb-8 sm:mb-12 lg:mb-16">
+      <div className="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 mx-2 sm:mx-0">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-4 sm:mb-6 text-center">Strategic Product Roadmap</h2>
+        <p className="text-gray-700 text-sm sm:text-base lg:text-lg leading-relaxed mb-6 sm:mb-8 text-center max-w-4xl mx-auto px-2">
           Looking ahead, NxtWave has multiple opportunities to evolve its product ecosystem and strengthen its market position.
           The roadmap focuses on addressing current weaknesses while capitalizing on emerging opportunities.
         </p>
         <div className="relative">
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             <div className="flex items-start">
-              <div className="flex-shrink-0 w-4 h-4 bg-blue-600 rounded-full mt-2"></div>
-              <div className="ml-6">
-                <div className="text-sm font-semibold text-blue-600 mb-1">Q1-Q2 2025</div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Optimize Core Product</h3>
-                <ul className="list-disc list-inside text-gray-600 space-y-1">
+              <div className="flex-shrink-0 w-3 h-3 sm:w-4 sm:h-4 bg-blue-600 rounded-full mt-1 sm:mt-2"></div>
+              <div className="ml-4 sm:ml-6">
+                <div className="text-xs sm:text-sm font-semibold text-blue-600 mb-1">Q1-Q2 2025</div>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">Optimize Core Product</h3>
+                <ul className="list-disc list-inside text-gray-600 space-y-1 text-xs sm:text-sm">
                   <li>Implement AI-powered doubt resolution system</li>
                   <li>Launch verified placement tracking dashboard</li>
                   <li>Enhance mentor matching algorithm</li>
@@ -23,11 +23,11 @@ export default function Roadmap() {
               </div>
             </div>
             <div className="flex items-start">
-              <div className="flex-shrink-0 w-4 h-4 bg-green-600 rounded-full mt-2"></div>
-              <div className="ml-6">
-                <div className="text-sm font-semibold text-green-600 mb-1">Q3-Q4 2025</div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Expand Product Portfolio</h3>
-                <ul className="list-disc list-inside text-gray-600 space-y-1">
+              <div className="flex-shrink-0 w-3 h-3 sm:w-4 sm:h-4 bg-green-600 rounded-full mt-1 sm:mt-2"></div>
+              <div className="ml-4 sm:ml-6">
+                <div className="text-xs sm:text-sm font-semibold text-green-600 mb-1">Q3-Q4 2025</div>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">Expand Product Portfolio</h3>
+                <ul className="list-disc list-inside text-gray-600 space-y-1 text-xs sm:text-sm">
                   <li>Launch advanced specializations (AI/ML, DevOps)</li>
                   <li>Develop B2B corporate training solutions</li>
                   <li>Create industry-specific career tracks</li>
@@ -36,11 +36,11 @@ export default function Roadmap() {
               </div>
             </div>
             <div className="flex items-start">
-              <div className="flex-shrink-0 w-4 h-4 bg-purple-600 rounded-full mt-2"></div>
-              <div className="ml-6">
-                <div className="text-sm font-semibold text-purple-600 mb-1">2026-2027</div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Build Comprehensive Ecosystem</h3>
-                <ul className="list-disc list-inside text-gray-600 space-y-1">
+              <div className="flex-shrink-0 w-3 h-3 sm:w-4 sm:h-4 bg-purple-600 rounded-full mt-1 sm:mt-2"></div>
+              <div className="ml-4 sm:ml-6">
+                <div className="text-xs sm:text-sm font-semibold text-purple-600 mb-1">2026-2027</div>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">Build Comprehensive Ecosystem</h3>
+                <ul className="list-disc list-inside text-gray-600 space-y-1 text-xs sm:text-sm">
                   <li>Launch NxtWave Pro subscription platform</li>
                   <li>Develop freelance marketplace for graduates</li>
                   <li>Create startup incubation program</li>
@@ -49,11 +49,11 @@ export default function Roadmap() {
               </div>
             </div>
             <div className="flex items-start">
-              <div className="flex-shrink-0 w-4 h-4 bg-orange-600 rounded-full mt-2"></div>
-              <div className="ml-6">
-                <div className="text-sm font-semibold text-orange-600 mb-1">2027+</div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Scale & Innovate</h3>
-                <ul className="list-disc list-inside text-gray-600 space-y-1">
+              <div className="flex-shrink-0 w-3 h-3 sm:w-4 sm:h-4 bg-orange-600 rounded-full mt-1 sm:mt-2"></div>
+              <div className="ml-4 sm:ml-6">
+                <div className="text-xs sm:text-sm font-semibold text-orange-600 mb-1">2027+</div>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">Scale & Innovate</h3>
+                <ul className="list-disc list-inside text-gray-600 space-y-1 text-xs sm:text-sm">
                   <li>Expand to international markets</li>
                   <li>Integrate emerging technologies (AR/VR, Metaverse)</li>
                   <li>Develop predictive career guidance AI</li>

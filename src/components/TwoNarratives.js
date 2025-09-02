@@ -6,18 +6,18 @@ export default function TwoNarratives() {
   const [narrativeView, setNarrativeView] = useState('official');
 
   return (
-    <section id="narrative" className="mb-16">
-      <div className="bg-white rounded-xl shadow-lg p-8">
-        <h2 className="text-4xl font-bold text-gray-900 mb-6 text-center">The Duality of Perception</h2>
-        <p className="text-gray-800 text-lg leading-relaxed mb-8 text-center max-w-4xl mx-auto font-medium">
+    <section id="narrative" className="mb-8 sm:mb-12 lg:mb-16">
+      <div className="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 mx-2 sm:mx-0">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 text-center">The Duality of Perception</h2>
+        <p className="text-gray-800 text-sm sm:text-base lg:text-lg leading-relaxed mb-6 sm:mb-8 text-center max-w-4xl mx-auto font-medium px-2">
           NxtWave operates in a complex ecosystem where external perception and internal reality sometimes diverge.
           This section presents the contrasting narratives that shape stakeholder understanding of the company.
         </p>
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-6 sm:mb-8">
           <div className="bg-gray-100 p-1 rounded-lg">
             <button
               onClick={() => setNarrativeView('official')}
-              className={`px-6 py-3 rounded-md font-semibold transition-all ${
+              className={`px-4 sm:px-6 py-2 sm:py-3 rounded-md font-semibold transition-all text-sm sm:text-base ${
                 narrativeView === 'official'
                   ? 'bg-emerald-700 text-white shadow-lg'
                   : 'bg-white text-slate-700 hover:bg-slate-50'
@@ -27,7 +27,7 @@ export default function TwoNarratives() {
             </button>
             <button
               onClick={() => setNarrativeView('counter')}
-              className={`px-6 py-3 rounded-md font-semibold transition-all ${
+              className={`px-4 sm:px-6 py-2 sm:py-3 rounded-md font-semibold transition-all text-sm sm:text-base ${
                 narrativeView === 'counter'
                   ? 'bg-rose-700 text-white shadow-lg'
                   : 'bg-white text-slate-700 hover:bg-slate-50'

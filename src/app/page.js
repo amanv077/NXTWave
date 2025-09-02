@@ -14,6 +14,7 @@ import Competition from '../components/Competition';
 import SWOT from '../components/SWOT';
 import Roadmap from '../components/Roadmap';
 import Footer from '../components/Footer';
+import ScrollToTop from '../components/ScrollToTop';
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState('summary');
@@ -54,7 +55,7 @@ export default function Home() {
         <div id="nav-placeholder" className="h-0"></div>
       </div>
 
-      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-7xl">
+      <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8 lg:py-12 max-w-7xl">
         <ExecutiveSummary />
         <ProductDeepDive />
         <UserPersonas />
@@ -68,6 +69,7 @@ export default function Home() {
       </main>
 
       <Footer />
+      <ScrollToTop />
     </div>
   );
 }
