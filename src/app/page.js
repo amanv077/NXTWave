@@ -48,9 +48,13 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
       <Hero />
-      <Navigation activeSection={activeSection} onSectionChange={setActiveSection} />
+      <div className="relative">
+        <Navigation activeSection={activeSection} onSectionChange={setActiveSection} />
+        {/* Placeholder to prevent layout shift when navigation becomes fixed */}
+        <div id="nav-placeholder" className="h-0"></div>
+      </div>
 
-      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-7xl" style={{ paddingTop: '80px' }}>
+      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-7xl">
         <ExecutiveSummary />
         <ProductDeepDive />
         <UserPersonas />
